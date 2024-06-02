@@ -57,7 +57,7 @@ module Append_only (K : Irmin.Type.S) (V : Irmin.Type.S) = struct
     let key_string = Protocol.Varchar (Irmin.Type.to_string K.t key) in 
     let value_string = Protocol.Varchar (Irmin.Type.to_string V.t value) in 
     let _ = query t
-                  ~query:"INSERT INTO keyspace1.append_only_store VALUES(?,?)" 
+                  ~query:"INSERT INTO keyspace1.append_only_store(key,value) VALUES (?,?)" 
                   ~values:[key_string ; value_string] ()
     in
     ()
