@@ -108,15 +108,24 @@ module Atomic_write (K : Irmin.Type.S) (V : Irmin.Type.S) = struct
 
   let test_and_set t key ~test ~set =
     let open Scylla in
-    let key_string = Protocol.Varchar (Irmin.Type.to_string K.t key) in 
-    let test_string = Protocol.Varchar (Irmin.Type.to_string V.t (test |> Option.get)) in
-    let set_string = Protocol.Varchar (Irmin.Type.to_string V.t (set |> Option.get)) in
-    let _ = query t.t 
+    if Option.is_none test then (
+      let key_string = Protocol.Varchar (Irmin.Type.to_string K.t key) in 
+      let set_string = Protocol.Varchar (Irmin.Type.to_string V.t (set |> Option.get)) in
+      let _ = query t.t 
+                  ~query:"UPDATE keyspace1.atomic_store set value = ? WHERE key = ?"
+                  ~values:[set_string ; key_string ]
+                  ()
+      in true
+    ) else (
+      let key_string = Protocol.Varchar (Irmin.Type.to_string K.t key) in 
+      let test_string = Protocol.Varchar (Irmin.Type.to_string V.t (test |> Option.get)) in
+      let set_string = Protocol.Varchar (Irmin.Type.to_string V.t (set |> Option.get)) in
+      let _ = query t.t 
                   ~query:"UPDATE keyspace1.atomic_store set value = ? WHERE key = ? IF value = ?"
                   ~values:[set_string ; key_string ; test_string ]
                   ()
-    in 
-    true
+      in true
+    )
 
   let remove _t _key = ()
 
