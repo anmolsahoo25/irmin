@@ -1,4 +1,3 @@
-open Eio
 open Astring
 
 module Conf = struct
@@ -23,10 +22,10 @@ module Read_only (K : Irmin.Type.S) (V : Irmin.Type.S) = struct
   type -'a t = 'a Scylla.conn
 
   let v config =
-    let net = Irmin.Backend.Conf.Env.net () in 
+    let sw, net = Irmin.Backend.Conf.Env.net () in 
     let ip = Conf.get config Conf.ip_key in 
     let port = Conf.get config Conf.port_key |> String.to_int |> Option.get in
-    let t = (Switch.run (fun sw -> Scylla.connect sw net ip port) |> Result.get_ok) in
+    let t = Scylla.connect sw net ip port |> Result.get_ok in
     let t = (t :> Irmin.Perms.read t) in
     t
 
