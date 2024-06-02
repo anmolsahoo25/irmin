@@ -16,7 +16,7 @@ build: [
 depends: [
   "ocaml"      {>= "5.1.0"}
   "dune"       {>= "3.5.0"}
-  "irmin"      {= version}
+  "irmin"
   "astring"
   "logs"
   "eio"        {>= "1.0"}
