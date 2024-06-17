@@ -16,7 +16,7 @@ build: [
 depends: [
   "ocaml"      {>= "5.1.0"}
   "dune"       {>= "3.5.0"}
-  "irmin"
+  "irmin" {= "dev"}
   "astring"
   "logs"
   "eio"        {>= "1.0"}
@@ -24,7 +24,7 @@ depends: [
   "alcotest"   {with-test}
   "irmin-test" {with-test & = version}
   "irmin-watcher" {with-test & = "dev"}
-  "scylla"
+  "scylla" {= "dev"}
 ]
 
 pin-depends: [
